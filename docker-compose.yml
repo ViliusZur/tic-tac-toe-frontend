@@ -8,8 +8,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - '.:/tic-tac-toe'
-      - '/tic-tac-toe/node_modules'
+      - '.:/tic-tac-toe-frontend'
+      - '/tic-tac-toe-frontend/node_modules'
     ports:
       - 3001:3000
     environment:
