@@ -16,23 +16,115 @@ class Board extends React.Component {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
+      log: [],
       xIsNext: true, // change between X and O
+      winner: false,
     };
   }
 
-  handleClick(i) {
-    const squares = this.state.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      // if the game is won or a filled square is clicked - do nothing
+  componentDidMount = async () => {
+    console.log("component did mount");
+    await this.getLogs();
+    console.log("got logs");
+  }
+
+  handleClick = async (i) => {
+    if(this.state.winner || this.state.squares[i] || this.state.winner === null){
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    const value = this.state.xIsNext ? 'X' : 'O';
+    const data = {
+      "square":i,
+      "value":value,
+      "newGame":false
+    }
+    const query = 'http://localhost:8080/api/log';
+    // send a request to log an event
+    await fetch(query, {
+      credentials: 'include',
+      method: "POST",
+      headers:
+      {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
     this.setState({
-      squares: squares,
       xIsNext: !this.state.xIsNext,
     });
-    // this is where a request to API to log will happen
-    console.log(i, squares[i]);
+    await this.getLogs();
+  }
+
+  getLogs = async () => {
+    const query = 'http://localhost:8080/api/getLogs';
+    await fetch(query, {
+      credentials: 'include',
+      method: "GET",
+      headers:
+      {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      if(res.ok) {
+        res.json().then(json => {
+
+          this.setState({
+            squares: json.squares,
+            log: json.log,
+            winner: json.winner,
+          });
+          console.log(json.squares, json.log, json.winner, this.state.xIsNext);
+        });
+      } else {
+        console.log("error in fetching search query");
+      }
+    });
+    
+  }
+
+  newGame = async () => {
+    // creates a new game
+    const data = {
+      "square":null,
+      "value":null,
+      "newGame":true
+    }
+    const query = 'http://localhost:8080/api/log';
+    // send a request to log an event
+    await fetch(query, {
+      credentials: 'include',
+      method: 'POST',
+      headers:
+      {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+    this.setState({
+      xIsNext: 'X',
+    });
+    await this.getLogs();
+  }
+
+  newSession = async () => {
+    // creates a new session in the backend
+    const query = 'http://localhost:8080/api/closeSession';
+    await fetch(query, {
+      credentials: 'include',
+      method: 'POST',
+      headers:
+      {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    });
+    this.setState({
+      xIsNext: 'X',
+    });
+    await this.getLogs();
   }
 
   renderSquare(i) {
@@ -44,21 +136,12 @@ class Board extends React.Component {
     );
   }
 
-  newGame() {
-    // creates a new game
-    this.setState({
-      squares: Array(9).fill(null),
-      xIsNext: true,
-    })
-    console.log("new game");
-    // send post req to API to log "new game"
-  }
-
   render() {
-    const winner = calculateWinner(this.state.squares);
     let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
+    if (this.state.winner) {
+      status = 'Winner: ' + this.state.winner;
+    } else if (this.state.winner === null) {
+      status = 'Nobody won the game.';
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -82,6 +165,8 @@ class Board extends React.Component {
             {this.renderSquare(8)}
           </div>
           <button className="newGame" onClick={() => this.newGame()}>New Game</button>
+          <br></br>
+          <button className="newSession" onClick={() => this.newSession()}>New Session</button>
         </div>
     );
   }
@@ -98,27 +183,6 @@ class Game extends React.Component {
     );
   }
 }
-
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
-
 
 // ========================================
 
