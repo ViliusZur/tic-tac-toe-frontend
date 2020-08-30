@@ -23,13 +23,13 @@ class Board extends React.Component {
   }
 
   componentDidMount = async () => {
-    console.log("component did mount");
+    // retrieve logs from the API when website opens up
     await this.getLogs();
-    console.log("got logs");
   }
 
   handleClick = async (i) => {
     if(this.state.winner || this.state.squares[i] || this.state.winner === null){
+      // if there is a winner, the square already has X or O, or if the game is finished without a winner - do nothing
       return;
     }
     const value = this.state.xIsNext ? 'X' : 'O';
@@ -39,7 +39,7 @@ class Board extends React.Component {
       "newGame":false
     }
     const query = 'http://localhost:8080/api/log';
-    // send a request to log an event
+    // send a request to API to log an event
     await fetch(query, {
       credentials: 'include',
       method: "POST",
@@ -50,6 +50,7 @@ class Board extends React.Component {
       },
       body: JSON.stringify(data)
     });
+    // change the value for the next click
     this.setState({
       xIsNext: !this.state.xIsNext,
     });
@@ -57,6 +58,7 @@ class Board extends React.Component {
   }
 
   getLogs = async () => {
+    // retrieves logs from API
     const query = 'http://localhost:8080/api/getLogs';
     await fetch(query, {
       credentials: 'include',
@@ -69,13 +71,12 @@ class Board extends React.Component {
     }).then(res => {
       if(res.ok) {
         res.json().then(json => {
-
+          // logs consist of squares (game grid state), logs, and whether there is a winner
           this.setState({
             squares: json.squares,
             log: json.log,
             winner: json.winner,
           });
-          console.log(json.squares, json.log, json.winner, this.state.xIsNext);
         });
       } else {
         console.log("error in fetching search query");
@@ -92,7 +93,7 @@ class Board extends React.Component {
       "newGame":true
     }
     const query = 'http://localhost:8080/api/log';
-    // send a request to log an event
+    // send a request to log a new game event in the API
     await fetch(query, {
       credentials: 'include',
       method: 'POST',
@@ -103,6 +104,7 @@ class Board extends React.Component {
       },
       body: JSON.stringify(data)
     });
+    // set the state so X would always be the starting value
     this.setState({
       xIsNext: 'X',
     });
@@ -110,7 +112,7 @@ class Board extends React.Component {
   }
 
   newSession = async () => {
-    // creates a new session in the backend
+    // creates a new session in the API
     const query = 'http://localhost:8080/api/closeSession';
     await fetch(query, {
       credentials: 'include',
@@ -121,6 +123,7 @@ class Board extends React.Component {
         "Content-Type": "application/json"
       }
     });
+    // set the state so X would always be the starting value
     this.setState({
       xIsNext: 'X',
     });
@@ -147,6 +150,7 @@ class Board extends React.Component {
     }
 
     return (
+      <>
         <div>
           <div className="status">{status}</div>
           <div className="board-row">
@@ -164,10 +168,15 @@ class Board extends React.Component {
             {this.renderSquare(7)}
             {this.renderSquare(8)}
           </div>
-          <button className="newGame" onClick={() => this.newGame()}>New Game</button>
+          <button className="newButton" onClick={() => this.newGame()}>New Game</button>
           <br></br>
-          <button className="newSession" onClick={() => this.newSession()}>New Session</button>
+          <button className="newButton" onClick={() => this.newSession()}>New Session</button>
         </div>
+        <div className="logs">
+          Logs:
+          {this.state.log.map((txt, index) => <p key={index}>{index+1}. {txt}</p>)}
+        </div>
+      </>
     );
   }
 }
