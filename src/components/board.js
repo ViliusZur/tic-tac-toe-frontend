@@ -1,9 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from "react";
+import Fetch from '../utils/fetch_functions';
 
-import Board from './components/board';
-/*
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -12,7 +9,7 @@ function Square(props) {
   );
 }
 
-class Board extends React.Component {
+export default class Board extends React.Component {
 
   constructor(props) {
     super(props);
@@ -41,7 +38,7 @@ class Board extends React.Component {
       "newGame":false
     }
     // send data to API
-    await postData(data);
+    await Fetch.postData(data);
     // change the value for the next click
     this.setState({
       xIsNext: !this.state.xIsNext,
@@ -51,7 +48,7 @@ class Board extends React.Component {
 
   getLogs = async () => {
     // retrieves logs from API
-    const response = await retrieveLogs();
+    const response = await Fetch.retrieveLogs();
     this.setState({
       squares: response.squares,
       log: response.log,
@@ -66,7 +63,7 @@ class Board extends React.Component {
       "value":null,
       "newGame":true
     }
-    await postData(data);
+    await Fetch.postData(data);
     // set the state so X would always be the starting value
     this.setState({
       xIsNext: 'X',
@@ -76,7 +73,7 @@ class Board extends React.Component {
 
   newSession = async () => {
     // creates a new session in the API
-    await closeSession();
+    await Fetch.closeSession();
     // set the state so X would always be the starting value
     this.setState({
       xIsNext: 'X',
@@ -134,20 +131,3 @@ class Board extends React.Component {
     );
   }
 }
-*/
-class Game extends React.Component {
-  render() {
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board />
-        </div>
-      </div>
-    );
-  }
-}
-
-ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
-);
