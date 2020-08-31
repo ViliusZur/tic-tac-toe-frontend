@@ -1,9 +1,9 @@
-import React from "react";
-import Fetch from '../utils/fetch_functions';
+import React from 'react';
+import Fetch from '../../utils/fetch_functions/fetch_functions';
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className='square' data-testid={'square'+props.num} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -35,7 +35,7 @@ export default class Board extends React.Component {
     const data = {
       "square":i,
       "value":value,
-      "newGame":false
+      "newGame":false,
     }
     // send data to API
     await Fetch.postData(data);
@@ -49,10 +49,14 @@ export default class Board extends React.Component {
   getLogs = async () => {
     // retrieves logs from API
     const response = await Fetch.retrieveLogs();
+    let xState;
+    if(response.log[0] && response.log[0].includes('X')) xState = false;
+    else xState = true;
     this.setState({
       squares: response.squares,
       log: response.log,
       winner: response.winner,
+      xIsNext: xState,
     });
   }
 
@@ -76,7 +80,7 @@ export default class Board extends React.Component {
     await Fetch.closeSession();
     // set the state so X would always be the starting value
     this.setState({
-      xIsNext: 'X',
+      xIsNext: true,
     });
     await this.getLogs();
   }
@@ -86,6 +90,7 @@ export default class Board extends React.Component {
     <Square 
       value={this.state.squares[i]} 
       onClick={() => this.handleClick(i)}
+      num={i}
     />
     );
   }
@@ -99,11 +104,11 @@ export default class Board extends React.Component {
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
-
+    
     return (
       <>
         <div>
-          <div className="status">{status}</div>
+          <div className="status" data-testid="status">{status}</div>
           <div className="board-row">
             {this.renderSquare(0)}
             {this.renderSquare(1)}
@@ -119,11 +124,11 @@ export default class Board extends React.Component {
             {this.renderSquare(7)}
             {this.renderSquare(8)}
           </div>
-          <button className="newButton" onClick={() => this.newGame()}>New Game</button>
+          <button className="newButton" data-testid="newGame" onClick={() => this.newGame()}>New Game</button>
           <br></br>
-          <button className="newButton" onClick={() => this.newSession()}>New Session</button>
+          <button className="newButton" data-testid="newSession" onClick={() => this.newSession()}>Clear Logs</button>
         </div>
-        <div className="logs">
+        <div className="logs" data-testid="logs">
           Logs:
           {this.state.log.map((txt, index) => <p key={index}>{index+1}. {txt}</p>)}
         </div>
