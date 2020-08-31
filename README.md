@@ -1,68 +1,34 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1>About</h1>
 
-## Available Scripts
+This is the frontend of a game Tic-Tac-Toe. The backend can be found [here](https://github.com/ViliusZur/tic-tac-toe-backend).
 
-In the project directory, you can run:
+Frontend displays the game board, game state, and logs. Every event in the game is sent to the backend API to store in the session. If the page is refreshed, frontend sends a GET request to the API to retrieve logs and game state at which point the game resumes. Frontend also has two buttons - New Game, for starting a new game, and Clear Logs, which starts a new session in the backend clearing the logs and game state.
 
-### `npm start`
+<h2>How to run the project</h2>
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Please note: the game will render, but will not work if [backend](https://github.com/ViliusZur/tic-tac-toe-backend) is not running.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+If you have [docker desktop](https://www.docker.com/products/docker-desktop) installed on your machine, run:
 
-### `npm test`
+* `git clone https://github.com/ViliusZur/tic-tac-toe-frontend.git` to clone the repository
+* `cd tic-tac-toe-frontend` change directory into project
+* `docker-compose up -d` to run the project
+* The website will be located at `http://localhost:3000`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+If you do not have [docker desktop](https://www.docker.com/products/docker-desktop) installed, simply run:
 
-### `npm run build`
+* `git clone https://github.com/ViliusZur/tic-tac-toe-frontend.git` to clone the repository
+* `cd tic-tac-toe-frontend` change directory into project
+* `npm install` to download the package and its' dependencies
+* `npm start` to run the project
+* The website will be located at `http://localhost:3000`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<h2>Unit tests</h2>
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Some unit tests were produced using [Jest](https://jestjs.io/en/) and [jest-fetch-mock](https://www.npmjs.com/package/jest-fetch-mock). The unit tests mainly test whether the components are rendered correctly.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+To run the tests, run:
+* `git clone https://github.com/ViliusZur/tic-tac-toe-frontend.git` to clone the repository
+* `cd tic-tac-toe-frontend` change directory into project
+* `npm install` to download the package and its' dependencies
+* `npm test` to run the tests
