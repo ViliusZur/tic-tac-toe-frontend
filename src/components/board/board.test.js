@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Board from './board';
-import { shallow, mount } from 'enzyme';
-import { render, cleanup } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 beforeEach(() => {
