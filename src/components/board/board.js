@@ -1,10 +1,11 @@
 import React from 'react';
-import Fetch from '../../utils/fetch_functions/fetch_functions';
+import './board.css';
+import api from '../../utils/fetch_functions/fetch_functions';
 
-function Square(props) {
+const Square = ({ value, onClick, num }) => {
   return (
-    <button className='square' data-testid={'square'+props.num} onClick={props.onClick}>
-      {props.value}
+    <button className='square' data-testid={'square'+num} onClick={onClick}>
+      {value}
     </button>
   );
 }
@@ -38,7 +39,7 @@ export default class Board extends React.Component {
       "newGame":false,
     }
     // send data to API
-    await Fetch.postData(data);
+    await api.postData(data);
     // change the value for the next click
     this.setState({
       xIsNext: !this.state.xIsNext,
@@ -48,7 +49,7 @@ export default class Board extends React.Component {
 
   getLogs = async () => {
     // retrieves logs from API
-    const response = await Fetch.retrieveLogs();
+    const response = await api.retrieveLogs();
     let xState;
     if(response.log[0] && response.log[0].includes('X')) xState = false;
     else xState = true;
@@ -67,7 +68,7 @@ export default class Board extends React.Component {
       "value":null,
       "newGame":true
     }
-    await Fetch.postData(data);
+    await api.postData(data);
     // set the state so X would always be the starting value
     this.setState({
       xIsNext: 'X',
@@ -77,7 +78,7 @@ export default class Board extends React.Component {
 
   newSession = async () => {
     // creates a new session in the API
-    await Fetch.closeSession();
+    await api.closeSession();
     // set the state so X would always be the starting value
     this.setState({
       xIsNext: true,
